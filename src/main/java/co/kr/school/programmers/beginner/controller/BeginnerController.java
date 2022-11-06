@@ -4,7 +4,6 @@ import co.kr.school.programmers.beginner.service.BeginnerService;
 import lombok.extern.log4j.Log4j2;
 import org.springframework.beans.factory.annotation.Autowired;
 
-@Log4j2
 public class BeginnerController {
 
     @Autowired
@@ -12,6 +11,6 @@ public class BeginnerController {
 
     public static void main(String[] args) {
 
-        log.debug("this is BeginnerController");
+        System.out.println("this is BeginnerController");
     }
 }
