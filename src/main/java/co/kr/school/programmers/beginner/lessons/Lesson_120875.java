@@ -3,7 +3,7 @@ package co.kr.school.programmers.beginner.lessons;
 import java.util.*;
 
 /**********************************************************************************
- 코딩테스트 입문 - 평행
+ 코딩테스트 입문 :: 평행
  문제 설명
     점 네 개의 좌표를 담은 이차원 배열  dots가 다음과 같이 매개변수로 주어집니다.
     [[x1, y1], [x2, y2], [x3, y3], [x4, y4]]
@@ -33,16 +33,17 @@ import java.util.*;
 public class Lesson_120875 {
 
     public Lesson_120875() {
-        int[][] dots = {{1, 4}, {9, 2}, {3, 8}, {10, 4}};
 
-        Solution solution = new Solution(dots);
+        Solution solution = new Solution();
+
+        int[][] dotsCase1 = {{1, 4}, {9, 2}, {3, 8}, {10, 4}};
+        solution.solution(dotsCase1);
+
+        int[][] dotsCase2 = {{3, 5}, {4, 1}, {2, 4}, {5, 10}};
+        solution.solution(dotsCase2);
     }
 
     static class Solution {
-
-        public Solution(int[][] dots) {
-            solution(dots);
-        }
 
         public int solution(int[][] dots) {
             int answer = 0;

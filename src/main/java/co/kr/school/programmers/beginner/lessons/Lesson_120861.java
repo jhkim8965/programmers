@@ -1,7 +1,7 @@
 package co.kr.school.programmers.beginner.lessons;
 
 /**
- * 코팅테스트 입문: 캐릭터의 좌표
+ * 코팅테스트 입문 :: 캐릭터의 좌표
  */
 public class Lesson_120861 {
 

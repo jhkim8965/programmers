@@ -20,7 +20,21 @@ class BeginnerControllerTest {
     @Test
     @DisplayName("캐릭터의 좌표")
     void lesson_120861() {
-        System.out.println("sadasd");
+        System.out.println("캐릭터의 좌표 테스트");
         beginnerService.lesson_120861();
+    }
+
+    @Test
+    @DisplayName("평행")
+    void lesson_120875() {
+        System.out.println("평행 테스트");
+        beginnerService.lesson_120875();
+    }
+
+    @Test
+    @DisplayName("옹알이")
+    void lesson_120956() {
+        System.out.println("옹알이 테스트");
+        beginnerService.lesson_120956();
     }
 }
