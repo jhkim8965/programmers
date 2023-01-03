@@ -1,4 +1,4 @@
-package co.kr.school.programmers.beginner.lessons;
+package co.kr.school.programmers.beginner.lessons.lv0;
 
 /**********************************************************************************
 코딩테스트 입문 :: 옹알이

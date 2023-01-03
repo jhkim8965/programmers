@@ -1,4 +1,4 @@
-package co.kr.school.programmers.beginner.lessons;
+package co.kr.school.programmers.beginner.lessons.lv0;
 
 import java.util.*;
 

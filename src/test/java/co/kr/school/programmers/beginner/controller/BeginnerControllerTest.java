@@ -8,6 +8,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
@@ -36,5 +41,12 @@ class BeginnerControllerTest {
     void lesson_120956() {
         System.out.println("옹알이 테스트");
         beginnerService.lesson_120956();
+    }
+
+    @Test
+    @DisplayName("완주하지 못한 선수")
+    void lesson_42576() {
+        System.out.println("완주하지 못한 선수 테스트");
+        beginnerService.lesson_42576();
     }
 }
