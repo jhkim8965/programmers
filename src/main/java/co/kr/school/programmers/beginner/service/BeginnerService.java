@@ -32,4 +32,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: 완주하지 못한 선수
      */
     public void lesson_42576() { Lesson_42576 lesson_42576 = new Lesson_42576(); }
+
+    /**
+     * 코딩테스트 lv1: 체육복
+     */
+    public void lesson_42862() { Lesson_42862 lesson_42862 = new Lesson_42862(); }
 }

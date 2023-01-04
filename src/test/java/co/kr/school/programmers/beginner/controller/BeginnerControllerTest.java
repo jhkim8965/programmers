@@ -49,4 +49,11 @@ class BeginnerControllerTest {
         System.out.println("완주하지 못한 선수 테스트");
         beginnerService.lesson_42576();
     }
+
+    @Test
+    @DisplayName("체육복")
+    void lesson_42862() {
+        System.out.println("체육복");
+        beginnerService.lesson_42862();
+    }
 }
