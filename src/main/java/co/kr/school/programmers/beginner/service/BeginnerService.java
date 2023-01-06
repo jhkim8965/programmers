@@ -37,4 +37,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: 체육복
      */
     public void lesson_42862() { Lesson_42862 lesson_42862 = new Lesson_42862(); }
+
+    /**
+     * 코딩테스트 lv1: 가장 가까운 같은 글자
+     */
+    public void lesson_142086() { Lesson_142086 lesson_142086 = new Lesson_142086(); }
 }

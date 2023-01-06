@@ -56,4 +56,11 @@ class BeginnerControllerTest {
         System.out.println("체육복");
         beginnerService.lesson_42862();
     }
+
+    @Test
+    @DisplayName("가장 가까운 같은 글자")
+    void lesson_142086() {
+        System.out.println("가장 가까운 같은 글자");
+        beginnerService.lesson_142086();
+    }
 }
