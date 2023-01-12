@@ -70,4 +70,11 @@ class BeginnerControllerTest {
         System.out.println("로또의 최고 순위와 최저 순위");
         beginnerService.lesson_77484();
     }
+
+    @Test
+    @DisplayName("[카카오 인턴] 키패드 누르기")
+    void lesson_67256() {
+        System.out.println("[카카오 인턴] 키패드 누르기");
+        beginnerService.lesson_67256();
+    }
 }

@@ -47,4 +47,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: 로또의 최고 순위와 최저 순위
      */
     public void lesson_77484() { Lesson_77484 lesson_77484 = new Lesson_77484(); }
+
+    /**
+     * 코딩테스트 lv1: [카카오 인턴] 키패드 누르기
+     */
+    public void lesson_67256() { Lesson_67256 lesson_67256 = new Lesson_67256(); }
 }
