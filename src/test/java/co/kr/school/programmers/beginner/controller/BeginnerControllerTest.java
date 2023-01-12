@@ -63,4 +63,11 @@ class BeginnerControllerTest {
         System.out.println("가장 가까운 같은 글자");
         beginnerService.lesson_142086();
     }
+
+    @Test
+    @DisplayName("로또의 최고 순위와 최저 순위")
+    void lesson_77484() {
+        System.out.println("로또의 최고 순위와 최저 순위");
+        beginnerService.lesson_77484();
+    }
 }

@@ -42,4 +42,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: 가장 가까운 같은 글자
      */
     public void lesson_142086() { Lesson_142086 lesson_142086 = new Lesson_142086(); }
+
+    /**
+     * 코딩테스트 lv1: 로또의 최고 순위와 최저 순위
+     */
+    public void lesson_77484() { Lesson_77484 lesson_77484 = new Lesson_77484(); }
 }
