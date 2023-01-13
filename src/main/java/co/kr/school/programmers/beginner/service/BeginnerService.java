@@ -63,4 +63,9 @@ public class BeginnerService {
      */
     public String lesson_72410(String new_id) { return new Lesson_72410(new_id).getResult(); }
     public String lesson_72410_bestAnswer_forStudy(String new_id) { return new Lesson_72410_bestAnswer_forStudy(new_id).getResult(); }
+
+    /**
+     * 코딩테스트 lv1: 신고 결과 받기
+     */
+    public int[] lesson_92334(String[] id_list, String[] report, int k) { return new Lesson_92334(id_list, report, k).getResult(); }
 }

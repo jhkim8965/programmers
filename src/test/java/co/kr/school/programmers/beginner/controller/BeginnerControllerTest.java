@@ -106,4 +106,15 @@ class BeginnerControllerTest {
         answer = beginnerService.lesson_72410_bestAnswer_forStudy("=.=");
         assertThat(answer).isEqualTo("aaa");
     }
+
+    @Test
+    @DisplayName("신고 결과 받기")
+    void lesson_92334() {
+        System.out.println("신고 결과 받기");
+        String[] id_list = {"muzi", "frodo", "apeach", "neo"};
+        String[] report = {"muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"};
+        int k = 2;
+        int[] answer = beginnerService.lesson_92334(id_list, report, k);
+        assertThat(answer).isEqualTo(new int[]{2, 1, 1, 0});
+    }
 }
