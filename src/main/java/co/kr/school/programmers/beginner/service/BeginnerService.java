@@ -52,4 +52,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: [카카오 인턴] 키패드 누르기
      */
     public void lesson_67256() { Lesson_67256 lesson_67256 = new Lesson_67256(); }
+
+    /**
+     * 코딩테스트 lv1: 크레인 인형뽑기 게임
+     */
+    public void lesson_64061() { Lesson_64061 lesson_64061 = new Lesson_64061(); }
 }

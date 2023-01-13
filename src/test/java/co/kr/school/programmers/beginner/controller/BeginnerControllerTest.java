@@ -8,10 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -76,5 +73,12 @@ class BeginnerControllerTest {
     void lesson_67256() {
         System.out.println("[카카오 인턴] 키패드 누르기");
         beginnerService.lesson_67256();
+    }
+
+    @Test
+    @DisplayName("크레인 인형뽑기 게임")
+    void lesson_64061() {
+        System.out.println("크레인 인형뽑기 게임");
+        beginnerService.lesson_64061();
     }
 }
