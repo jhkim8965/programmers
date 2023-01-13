@@ -7,10 +7,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-
-import java.util.*;
-
-import static org.junit.jupiter.api.Assertions.*;
+import static org.assertj.core.api.Assertions.*;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -80,5 +77,33 @@ class BeginnerControllerTest {
     void lesson_64061() {
         System.out.println("크레인 인형뽑기 게임");
         beginnerService.lesson_64061();
+    }
+
+    @Test
+    @DisplayName("신규 아이디 추천")
+    void lesson_72410() {
+        System.out.println("신규 아이디 추천");
+        String answer = beginnerService.lesson_72410("...!@BaT#*..y.abcdefghijklm");
+        assertThat(answer).isEqualTo("bat.y.abcdefghi");
+
+        answer = beginnerService.lesson_72410("z-+.^.");
+        assertThat(answer).isEqualTo("z--");
+
+        answer = beginnerService.lesson_72410("=.=");
+        assertThat(answer).isEqualTo("aaa");
+    }
+
+    @Test
+    @DisplayName("신규 아이디 추천 - 공부 참고용")
+    void lesson_72410_bestAnswer_forStudy() {
+        System.out.println("신규 아이디 추천 - 공부 참고용");
+        String answer = beginnerService.lesson_72410_bestAnswer_forStudy("...!@BaT#*..y.abcdefghijklm");
+        assertThat(answer).isEqualTo("bat.y.abcdefghi");
+
+        answer = beginnerService.lesson_72410_bestAnswer_forStudy("z-+.^.");
+        assertThat(answer).isEqualTo("z--");
+
+        answer = beginnerService.lesson_72410_bestAnswer_forStudy("=.=");
+        assertThat(answer).isEqualTo("aaa");
     }
 }

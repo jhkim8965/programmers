@@ -57,4 +57,10 @@ public class BeginnerService {
      * 코딩테스트 lv1: 크레인 인형뽑기 게임
      */
     public void lesson_64061() { Lesson_64061 lesson_64061 = new Lesson_64061(); }
+
+    /**
+     * 코딩테스트 lv1: 신규 아이디 추천
+     */
+    public String lesson_72410(String new_id) { return new Lesson_72410(new_id).getResult(); }
+    public String lesson_72410_bestAnswer_forStudy(String new_id) { return new Lesson_72410_bestAnswer_forStudy(new_id).getResult(); }
 }
