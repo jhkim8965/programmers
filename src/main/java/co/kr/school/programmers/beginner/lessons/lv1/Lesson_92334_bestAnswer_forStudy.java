@@ -1,6 +1,7 @@
 package co.kr.school.programmers.beginner.lessons.lv1;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 /**********************************************************************************
  * 신고 결과 받기
@@ -71,10 +72,10 @@ import java.util.*;
  * 정확성 테스트 : 10초
  ***********************************************************************************/
 
-public class Lesson_92334 {
+public class Lesson_92334_bestAnswer_forStudy {
     private int[] result = {};
 
-    public Lesson_92334(String[] id_list, String[] report, int k) {
+    public Lesson_92334_bestAnswer_forStudy(String[] id_list, String[] report, int k) {
         this.result = solution(id_list, report, k);
     }
 
@@ -83,130 +84,17 @@ public class Lesson_92334 {
     }
 
     private int[] solution(String[] id_list, String[] report, int k) {
-        Map<String, User> users = new LinkedHashMap<>();
-        Map<User, Object> badUsers = new HashMap<>();
-
-        setUsers(users, id_list);
-        doReport(badUsers, users, report);
-        sendEmail(badUsers, k);
-
-        return getResultOfEmail(users);
-    }
-
-    private void setUsers(Map<String, User> users, String[] id_list) {
-        for (String id : id_list) {
-            User user = new User(id);
-            users.put(id, user);
-        }
-    }
-
-    private void doReport(Map<User, Object> badUsers, Map<String, User> users, String[] reports) {
-        for (String report : reports) {
-            processReporting(badUsers, users, report.split(" "));
-        }
-    }
-
-    private void processReporting(Map<User, Object> badUsers, Map<String, User> users, String[] reportInfo) {
-        final User REPORTER         = users.get(reportInfo[0]);
-        final String BAD_USER_ID    = reportInfo[1];
-
-        if (BAD_USER_ID.isEmpty()) {
-          // 신고할 불량 이용자 id가 비어있다면, 신고처리는 하지않는다.
-        } else {
-            if (users.containsKey(BAD_USER_ID)) {
-                badUsers.put(users.get(BAD_USER_ID)
-                                .report(REPORTER)
-                                .getInstance()
-                        , null);
-            }
-        }
-    }
-
-    private void sendEmail(Map<User, Object> badUsers, int k) {
-        for (User badUser : badUsers.keySet()) {
-            if (badUser.getBeReportedCnt() >= k) {
-                processEmailing(badUser);
-            }
-        }
-    }
-
-    private void processEmailing(User badUser) {
-        for (User reporter : badUser.getReporters().keySet()) {
-            reporter.email();
-        }
-    }
-
-    private int[] getResultOfEmail(Map<String, User> users) {
-        int[] answer = new int[users.size()];
-
-        int index = 0;
-        for (Map.Entry<String, User> user : users.entrySet()) {
-            answer[index++] = user.getValue().getEmailRecieveCnt();
+        List<String> list = Arrays.stream(report).distinct().collect(Collectors.toList());
+        HashMap<String, Integer> count = new HashMap<>();
+        for (String s : list) {
+            String target = s.split(" ")[1];
+            count.put(target, count.getOrDefault(target, 0) + 1);
         }
 
-        return answer;
-    }
-
-    private static class User {
-        private String id = "";
-        private int beReportedCnt = 0;
-        private Map<User, Object> reporters = new HashMap<>();
-        private int emailRecieveCnt = 0;
-
-        public User(String id) {
-            this.id = id;
-        }
-
-        public String getId() {
-            return id;
-        }
-
-        public User report(User reporter) {
-            if (reporters.containsKey(reporter)) {
-                // 신고 횟수에 제한은 없으나, 동일 불량 이용자를 n번 신고할 경우, 신고 횟수는 1번만 인정.
-            } else {
-                ++beReportedCnt;
-                reporters.put(reporter, null);
-            }
-
-            return this;
-        }
-
-        public int getBeReportedCnt() {
-            return beReportedCnt;
-        }
-
-        public Map<User, Object> getReporters() {
-            return reporters;
-        }
-
-        public User email() {
-            emailRecieveCnt++;
-
-            return this;
-        }
-
-        public int getEmailRecieveCnt() {
-            return emailRecieveCnt;
-        }
-
-        public User getInstance() {
-            return this;
-        }
-
-        @Override
-        public int hashCode() {
-            return this.id.hashCode();
-        }
-
-        @Override
-        public boolean equals(Object obj) {
-            if(this == obj) return true;
-            if(obj == null) return false;
-            if(this.getClass() != obj.getClass()) return false;
-
-            User user = (User) obj;
-            return id == user.id;
-        }
+        return Arrays.stream(id_list).map(_user -> {
+            final String user = _user;
+            List<String> reportList = list.stream().filter(s -> s.startsWith(user + " ")).collect(Collectors.toList());
+            return reportList.stream().filter(s -> count.getOrDefault(s.split(" ")[1], 0) >= k).count();
+        }).mapToInt(Long::intValue).toArray();
     }
 }

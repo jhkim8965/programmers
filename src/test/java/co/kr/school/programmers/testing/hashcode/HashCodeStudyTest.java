@@ -3,7 +3,9 @@ package co.kr.school.programmers.testing.hashcode;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
+import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
 
 import static org.assertj.core.api.Assertions.assertThat;
@@ -58,5 +60,26 @@ class HashCodeStudyTest {
 
         // then
         assertThat(userOverridedSet.size()).isEqualTo(1);
+    }
+
+    @Test
+    @DisplayName("Compare hashCode value between Custom User classes")
+    void hashCodeTest_customUserClasses2() {
+        // given
+        HashCodeStudy.User_overridden neo = new HashCodeStudy.User_overridden("neo");
+        HashCodeStudy.User_overridden neo2 = new HashCodeStudy.User_overridden("neo");
+        neo.reported();
+
+        // when
+        Map<HashCodeStudy.User_overridden, HashCodeStudy.User_overridden> userOverridedMap = new HashMap();
+        userOverridedMap.put(neo2, neo2);
+        userOverridedMap.put(neo, neo);
+        System.out.println("userOverridedSet.size() = " + userOverridedMap.size());
+        System.out.println("userOverridedMap.containsKey('neo') = " + userOverridedMap.containsKey("neo"));
+        System.out.println("userOverridedMap.containsKey(neo) = " + userOverridedMap.containsKey(neo));
+        System.out.println("userOverridedMap.containsKey(new HashCodeStudy.User_overridden(\"neo\")) = " + userOverridedMap.containsKey(new HashCodeStudy.User_overridden("neo")));
+
+        // then
+        assertThat(userOverridedMap.containsKey(new HashCodeStudy.User_overridden("neo"))).isEqualTo(true);
     }
 }

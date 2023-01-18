@@ -111,10 +111,19 @@ class BeginnerControllerTest {
     @DisplayName("신고 결과 받기")
     void lesson_92334() {
         System.out.println("신고 결과 받기");
+
+        // given
         String[] id_list = {"muzi", "frodo", "apeach", "neo"};
         String[] report = {"muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"};
         int k = 2;
+
+        // when
         int[] answer = beginnerService.lesson_92334(id_list, report, k);
+        for (int aswr : answer) {
+            System.out.println("aswr = " + aswr);
+        }
+
+        // then
         assertThat(answer).isEqualTo(new int[]{2, 1, 1, 0});
     }
 }
