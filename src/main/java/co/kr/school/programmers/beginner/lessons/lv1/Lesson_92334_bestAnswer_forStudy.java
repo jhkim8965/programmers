@@ -84,6 +84,9 @@ public class Lesson_92334_bestAnswer_forStudy {
     }
 
     private int[] solution(String[] id_list, String[] report, int k) {
+        /**
+         * 짧긴하나.. 성능이 매우 좋지않음..
+         */
         List<String> list = Arrays.stream(report).distinct().collect(Collectors.toList());
         HashMap<String, Integer> count = new HashMap<>();
         for (String s : list) {
