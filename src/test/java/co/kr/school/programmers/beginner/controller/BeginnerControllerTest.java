@@ -126,4 +126,31 @@ class BeginnerControllerTest {
         // then
         assertThat(answer).isEqualTo(new int[]{2, 1, 1, 0});
     }
+
+    @Test
+    @DisplayName("개인정보 수집 유효기간")
+    void lesson_150370() {
+        System.out.println("개인정보 수집 유효기간");
+
+        // given
+        String today = "2022.05.19";
+        String[] terms = {"A 6", "B 12", "C 3"};
+        String[] privacies = {"2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C"};
+////        String today = "2021.01.01";              // 파기
+////        String today = "2020.12.27";              //
+////        String today = "2020.12.01";              //
+//        String today = "2020.11.28";              // 파기
+////        String today = "2020.11.27";                //
+//        String[] terms = {"A 12"};
+//        String[] privacies = {"2019.12.01 A"};      // ~ 2020.11.28
+
+        // when
+        int[] answer = beginnerService.lesson_150370(today, terms, privacies);
+        for (int aswr : answer) {
+            System.out.println("파기대상 = " + aswr);
+        }
+
+        // then
+        assertThat(answer).isEqualTo(new int[]{1, 3});
+    }
 }

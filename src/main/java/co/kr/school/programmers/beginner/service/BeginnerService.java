@@ -68,4 +68,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: 신고 결과 받기
      */
     public int[] lesson_92334(String[] id_list, String[] report, int k) { return new Lesson_92334(id_list, report, k).getResult(); }
+
+    /**
+     * 코딩테스트 lv1: 개인정보 수집 유효기간
+     */
+    public int[] lesson_150370(String today, String[] terms, String[] privacies) { return new Lesson_150370(today, terms, privacies).getAnswer(); }
 }
