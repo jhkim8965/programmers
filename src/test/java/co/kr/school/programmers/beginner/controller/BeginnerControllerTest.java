@@ -114,7 +114,7 @@ class BeginnerControllerTest {
 
         // given
         String[] id_list = {"muzi", "frodo", "apeach", "neo"};
-        String[] report = {"muzi frodo","apeach frodo","frodo neo","muzi neo","apeach muzi"};
+        String[] report = {"muzi frodo", "apeach frodo", "frodo neo", "muzi neo", "apeach muzi"};
         int k = 2;
 
         // when
@@ -136,13 +136,6 @@ class BeginnerControllerTest {
         String today = "2022.05.19";
         String[] terms = {"A 6", "B 12", "C 3"};
         String[] privacies = {"2021.05.02 A", "2021.07.01 B", "2022.02.19 C", "2022.02.20 C"};
-////        String today = "2021.01.01";              // 파기
-////        String today = "2020.12.27";              //
-////        String today = "2020.12.01";              //
-//        String today = "2020.11.28";              // 파기
-////        String today = "2020.11.27";                //
-//        String[] terms = {"A 12"};
-//        String[] privacies = {"2019.12.01 A"};      // ~ 2020.11.28
 
         // when
         int[] answer = beginnerService.lesson_150370(today, terms, privacies);
@@ -152,5 +145,20 @@ class BeginnerControllerTest {
 
         // then
         assertThat(answer).isEqualTo(new int[]{1, 3});
+    }
+
+    @Test
+    @DisplayName("성격 유형 검사하기")
+    void lesson_118666() {
+        // given
+        String[] survey = {"AN", "CF", "MJ", "RT", "NA"};
+        int[] choices = {5, 3, 2, 7, 5};
+
+        // when
+        String answer = beginnerService.lesson_118666(survey, choices);
+        System.out.println("answer = " + answer);
+
+        // then
+        assertThat(answer).isEqualTo("TCMA");
     }
 }

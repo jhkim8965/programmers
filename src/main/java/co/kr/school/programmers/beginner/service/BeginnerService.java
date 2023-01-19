@@ -73,4 +73,9 @@ public class BeginnerService {
      * 코딩테스트 lv1: 개인정보 수집 유효기간
      */
     public int[] lesson_150370(String today, String[] terms, String[] privacies) { return new Lesson_150370(today, terms, privacies).getAnswer(); }
+
+    /**
+     * 코딩테스트 lv1: 성격 유형 검사하기
+     */
+    public String lesson_118666(String[] survey, int[] choices) { return new Lesson_118666(survey, choices).getAnswer(); }
 }
