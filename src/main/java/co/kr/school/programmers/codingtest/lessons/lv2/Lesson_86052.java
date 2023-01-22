@@ -76,6 +76,425 @@ public class Lesson_86052 {
         // 전역변수에 저장되어 있던 격자별 경로 통과 여부 값 참조하여, 아직 한 번도 통과한 적이 없는 격자를 찾아
         // 빛을 쏘는 형태로 해야할 듯 함.
         //-----------------------------------------------------------------------------------------------
+//        S s = new S(0, 0);
+//        try {
+//            PositionVO next = s.lightIn(-1, 0);
+//        } catch (LightBlockingException ex) {
+//            // 1 cycle 종료
+//            System.out.println(ex.getMessage());
+//        } catch (Exception ex) {
+//            System.out.println(ex.getMessage());
+//        }
+        Prism[][] prisms = setPrisms(grid);
+
+        for (Prism[] list : prisms) {
+            for (Prism prism : list) {
+                System.out.println("prism = " + prism.toString());
+            }
+        }
+
         return new int[] {};
+    }
+
+    private Prism[][] setPrisms(String[] grid) {
+        int height = grid.length;
+        int width = grid[0].split("").length;
+        Prism[][] prisms = new Prism[height][width];
+
+        int y = 0;
+        for (String xList : grid) {
+            int x = 0;
+            String[] prismList = xList.split("");
+            for (String prism : prismList) {
+                switch (prism) {
+                    case "S":
+                        prisms[y][x] = new S(x, y);
+                        break;
+                    case "L":
+                        prisms[y][x] = new L(x, y);
+                        break;
+                    case "R":
+                        prisms[y][x] = new R(x, y);
+                        break;
+                }
+                x++;
+            }
+            y++;
+        }
+
+        return prisms;
+    }
+}
+
+class S extends Prism implements Straight, Refraction{
+    public S(int myX, int myY) {
+        this.position = new PositionVO(myX, myY);
+    }
+
+    @Override
+    public PositionVO lightIn(int fromX, int fromY) throws Exception {
+        PositionVO nextPosition = refraction(fromX, fromY);
+
+        switch (nextPosition.getDirection()) {
+            case TOP:
+                if(OUT_TOP != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case LEFT:
+                if(OUT_LEFT != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case RIGHT:
+                if(OUT_RIGHT != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case BOTTOM:
+                if(OUT_BOTTOM != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+        }
+
+        return lightOut(nextPosition);
+    }
+
+    @Override
+    public PositionVO refraction(int fromX, int fromY) throws Exception {
+        return goStraight(fromX, fromY);
+    }
+
+    @Override
+    public PositionVO lightOut(PositionVO nextPosition) {
+        switch (nextPosition.getDirection()) {
+            case TOP:
+                this.OUT_TOP = nextPosition;
+                break;
+            case LEFT:
+                this.OUT_LEFT = nextPosition;
+                break;
+            case RIGHT:
+                this.OUT_RIGHT = nextPosition;
+                break;
+            case BOTTOM:
+                this.OUT_BOTTOM = nextPosition;
+                break;
+        }
+        return nextPosition;
+    }
+
+    public PositionVO goStraight(int fromX, int fromY) throws Exception{
+        PositionVO nextDirection;
+
+        switch (directing(fromX, fromY)) {
+            case TOP:
+                nextDirection = new PositionVO(this.position.getX(), this.position.getY() - 1);
+                nextDirection.setDirection(DIRECTION.TOP);
+                break;
+            case LEFT:
+                nextDirection = new PositionVO(this.position.getX() - 1, this.position.getY());
+                nextDirection.setDirection(DIRECTION.LEFT);
+                break;
+            case RIGHT:
+                nextDirection = new PositionVO(this.position.getX() + 1, this.position.getY());
+                nextDirection.setDirection(DIRECTION.RIGHT);
+                break;
+            case BOTTOM:
+                nextDirection = new PositionVO(this.position.getX(), this.position.getY() + 1);
+                nextDirection.setDirection(DIRECTION.BOTTOM);
+                break;
+            default:
+                throw new Exception("존재하지 않는 진행방향 입니다.");
+        }
+
+        return nextDirection;
+    }
+
+    @Override
+    public DIRECTION directing(int fromX, int fromY) throws Exception {
+        int diffX = this.position.getX() - fromX;
+        int diffY = this.position.getY() - fromY;
+
+        if (diffX > 0) {
+            return DIRECTION.RIGHT;
+        } else if (diffX < 0) {
+            return DIRECTION.LEFT;
+        } else if (diffY > 0) {
+            return DIRECTION.BOTTOM;
+        } else if (diffY < 0) {
+            return DIRECTION.TOP;
+        } else {
+            throw new Exception("x, y 좌표 값에 이상이있어 빛의 진행방향을 알 수 없습니다.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Class = S, x = " + this.position.getX() + ", y = " + this.position.getY();
+    }
+}
+
+class L extends Prism implements Left, Refraction{
+    public L(int myX, int myY) {
+        this.position = new PositionVO(myX, myY);
+    }
+
+    @Override
+    public PositionVO lightIn(int fromX, int fromY) throws Exception {
+        PositionVO nextPosition = refraction(fromX, fromY);
+
+        switch (nextPosition.getDirection()) {
+            case TOP:
+                if(OUT_TOP != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case LEFT:
+                if(OUT_LEFT != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case RIGHT:
+                if(OUT_RIGHT != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case BOTTOM:
+                if(OUT_BOTTOM != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+        }
+
+        return lightOut(nextPosition);
+    }
+
+    @Override
+    public PositionVO refraction(int fromX, int fromY) throws Exception {
+        return turnLeft(fromX, fromY);
+    }
+
+    @Override
+    public PositionVO lightOut(PositionVO nextPosition) {
+        switch (nextPosition.getDirection()) {
+            case TOP:
+                this.OUT_TOP = nextPosition;
+                break;
+            case LEFT:
+                this.OUT_LEFT = nextPosition;
+                break;
+            case RIGHT:
+                this.OUT_RIGHT = nextPosition;
+                break;
+            case BOTTOM:
+                this.OUT_BOTTOM = nextPosition;
+                break;
+        }
+        return nextPosition;
+    }
+
+    public PositionVO turnLeft(int fromX, int fromY) throws Exception{
+        PositionVO nextDirection;
+
+        switch (directing(fromX, fromY)) {
+            case TOP:
+                nextDirection = new PositionVO(this.position.getX() + 1, this.position.getY());
+                nextDirection.setDirection(DIRECTION.RIGHT);
+                break;
+            case LEFT:
+                nextDirection = new PositionVO(this.position.getX(), this.position.getY() - 1);
+                nextDirection.setDirection(DIRECTION.TOP);
+                break;
+            case RIGHT:
+                nextDirection = new PositionVO(this.position.getX(), this.position.getY() + 1);
+                nextDirection.setDirection(DIRECTION.BOTTOM);
+                break;
+            case BOTTOM:
+                nextDirection = new PositionVO(this.position.getX() - 1, this.position.getY());
+                nextDirection.setDirection(DIRECTION.LEFT);
+                break;
+            default:
+                throw new Exception("존재하지 않는 진행방향 입니다.");
+        }
+
+        return nextDirection;
+    }
+
+    @Override
+    public DIRECTION directing(int fromX, int fromY) throws Exception {
+        int diffX = this.position.getX() - fromX;
+        int diffY = this.position.getY() - fromY;
+
+        if (diffX > 0) {
+            return DIRECTION.RIGHT;
+        } else if (diffX < 0) {
+            return DIRECTION.LEFT;
+        } else if (diffY > 0) {
+            return DIRECTION.BOTTOM;
+        } else if (diffY < 0) {
+            return DIRECTION.TOP;
+        } else {
+            throw new Exception("x, y 좌표 값에 이상이있어 빛의 진행방향을 알 수 없습니다.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Class = L, x = " + this.position.getX() + ", y = " + this.position.getY();
+    }
+}
+
+class R extends Prism implements Right, Refraction{
+    public R(int myX, int myY) {
+        this.position = new PositionVO(myX, myY);
+    }
+
+    @Override
+    public PositionVO lightIn(int fromX, int fromY) throws Exception {
+        PositionVO nextPosition = refraction(fromX, fromY);
+
+        switch (nextPosition.getDirection()) {
+            case TOP:
+                if(OUT_TOP != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case LEFT:
+                if(OUT_LEFT != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case RIGHT:
+                if(OUT_RIGHT != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+            case BOTTOM:
+                if(OUT_BOTTOM != null) throw new LightBlockingException("이미 빛이 지나간 경로 입니다.");
+                break;
+        }
+
+        return lightOut(nextPosition);
+    }
+
+    @Override
+    public PositionVO refraction(int fromX, int fromY) throws Exception {
+        return turnRight(fromX, fromY);
+    }
+
+    @Override
+    public PositionVO lightOut(PositionVO nextPosition) {
+        switch (nextPosition.getDirection()) {
+            case TOP:
+                this.OUT_TOP = nextPosition;
+                break;
+            case LEFT:
+                this.OUT_LEFT = nextPosition;
+                break;
+            case RIGHT:
+                this.OUT_RIGHT = nextPosition;
+                break;
+            case BOTTOM:
+                this.OUT_BOTTOM = nextPosition;
+                break;
+        }
+        return nextPosition;
+    }
+
+    public PositionVO turnRight(int fromX, int fromY) throws Exception{
+        PositionVO nextDirection;
+
+        switch (directing(fromX, fromY)) {
+            case TOP:
+                nextDirection = new PositionVO(this.position.getX() - 1, this.position.getY());
+                nextDirection.setDirection(DIRECTION.LEFT);
+                break;
+            case LEFT:
+                nextDirection = new PositionVO(this.position.getX(), this.position.getY() + 1);
+                nextDirection.setDirection(DIRECTION.BOTTOM);
+                break;
+            case RIGHT:
+                nextDirection = new PositionVO(this.position.getX(), this.position.getY() - 1);
+                nextDirection.setDirection(DIRECTION.TOP);
+                break;
+            case BOTTOM:
+                nextDirection = new PositionVO(this.position.getX() + 1, this.position.getY());
+                nextDirection.setDirection(DIRECTION.RIGHT);
+                break;
+            default:
+                throw new Exception("존재하지 않는 진행방향 입니다.");
+        }
+
+        return nextDirection;
+    }
+
+    @Override
+    public DIRECTION directing(int fromX, int fromY) throws Exception {
+        int diffX = this.position.getX() - fromX;
+        int diffY = this.position.getY() - fromY;
+
+        if (diffX > 0) {
+            return DIRECTION.RIGHT;
+        } else if (diffX < 0) {
+            return DIRECTION.LEFT;
+        } else if (diffY > 0) {
+            return DIRECTION.BOTTOM;
+        } else if (diffY < 0) {
+            return DIRECTION.TOP;
+        } else {
+            throw new Exception("x, y 좌표 값에 이상이있어 빛의 진행방향을 알 수 없습니다.");
+        }
+    }
+
+    @Override
+    public String toString() {
+        return "Class = R, x = " + this.position.getX() + ", y = " + this.position.getY();
+    }
+}
+
+enum DIRECTION {
+    TOP, LEFT, RIGHT, BOTTOM;
+}
+
+class PositionVO {
+    private int X;
+    private int Y;
+    private DIRECTION direction;
+
+    public PositionVO(int x, int y) {
+        X = x;
+        Y = y;
+    }
+
+    public int getX() {
+        return X;
+    }
+
+    public int getY() {
+        return Y;
+    }
+
+    public DIRECTION getDirection() {
+        return direction;
+    }
+
+    public void setDirection(DIRECTION direction) {
+        this.direction = direction;
+    }
+}
+
+abstract class Prism {
+    final static int MAX_X = 10;
+    final static int MAX_Y = 10;
+
+    PositionVO position;
+
+    PositionVO OUT_TOP;
+    PositionVO OUT_LEFT;
+    PositionVO OUT_RIGHT;
+    PositionVO OUT_BOTTOM;
+
+    abstract public PositionVO lightIn(int fromX, int fromY) throws Exception;
+    abstract public PositionVO refraction(int fromX, int fromY) throws Exception;
+    abstract public PositionVO lightOut(PositionVO nextPosition);
+    abstract public String toString();
+}
+
+interface Straight {
+    public PositionVO goStraight(int fromX, int fromY) throws Exception;
+}
+interface Left {
+    public PositionVO turnLeft(int fromX, int fromY) throws Exception;
+}
+interface Right {
+    public PositionVO turnRight(int fromX, int fromY) throws Exception;
+}
+
+interface Refraction {
+    public DIRECTION directing(int fromX, int fromY) throws Exception;
+}
+class LightBlockingException extends RuntimeException {
+    LightBlockingException(String message) {
+        super(message);
     }
 }
