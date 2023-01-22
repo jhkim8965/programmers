@@ -76,30 +76,30 @@ public class Lesson_86052 {
         // 전역변수에 저장되어 있던 격자별 경로 통과 여부 값 참조하여, 아직 한 번도 통과한 적이 없는 격자를 찾아
         // 빛을 쏘는 형태로 해야할 듯 함.
         //-----------------------------------------------------------------------------------------------
-//        S s = new S(0, 0);
-//        try {
-//            PositionVO next = s.lightIn(-1, 0);
-//        } catch (LightBlockingException ex) {
-//            // 1 cycle 종료
-//            System.out.println(ex.getMessage());
-//        } catch (Exception ex) {
-//            System.out.println(ex.getMessage());
-//        }
-        Prism[][] prisms = setPrisms(grid);
+        final int MAX_X = grid[0].split("").length;
+        final int MAX_Y = grid.length;
+        Prism[][] prisms = setPrisms(grid, MAX_X, MAX_Y);
+        Prism firstPrism = prisms[0][0];
 
-        for (Prism[] list : prisms) {
-            for (Prism prism : list) {
-                System.out.println("prism = " + prism.toString());
+        try {
+            System.out.println("firstPrism.toString() = " + firstPrism.toString());
+            PositionVO nextPrismPosition = firstPrism.lightOn(DIRECTION.RIGHT);
+
+            while (nextPrismPosition != null) {
+                System.out.println("nextPrism.toString() = " + prisms[nextPrismPosition.getY()][nextPrismPosition.getX()].toString());
+                nextPrismPosition = getNextPrismPosition(prisms[nextPrismPosition.getY()][nextPrismPosition.getX()], nextPrismPosition.getDirection(), MAX_X, MAX_Y);
             }
+        } catch (LightBlockingException ex) {
+            System.out.println("1 cycle 종료 -> " + ex.getMessage());
+        } catch (Exception ex) {
+            System.out.println("기타 에러 -> " + ex.getMessage());
         }
 
         return new int[] {};
     }
 
-    private Prism[][] setPrisms(String[] grid) {
-        int height = grid.length;
-        int width = grid[0].split("").length;
-        Prism[][] prisms = new Prism[height][width];
+    private Prism[][] setPrisms(String[] grid, final int MAX_X, final int MAX_Y) {
+        Prism[][] prisms = new Prism[MAX_Y][MAX_X];
 
         int y = 0;
         for (String xList : grid) {
@@ -108,13 +108,13 @@ public class Lesson_86052 {
             for (String prism : prismList) {
                 switch (prism) {
                     case "S":
-                        prisms[y][x] = new S(x, y);
+                        prisms[y][x] = new S(x, y, MAX_Y, MAX_Y);
                         break;
                     case "L":
-                        prisms[y][x] = new L(x, y);
+                        prisms[y][x] = new L(x, y, MAX_Y, MAX_Y);
                         break;
                     case "R":
-                        prisms[y][x] = new R(x, y);
+                        prisms[y][x] = new R(x, y, MAX_Y, MAX_Y);
                         break;
                 }
                 x++;
@@ -124,11 +124,116 @@ public class Lesson_86052 {
 
         return prisms;
     }
+
+    private PositionVO getNextPrismPosition(Prism prism, DIRECTION direction, final int MAX_X, final int MAX_Y) throws Exception{
+        PositionVO nextPrismPosition = null;
+
+        switch (direction) {
+            case TOP:
+                nextPrismPosition = prism.lightIn(prism.position.getX(), setLoopPositionY(prism.position.getY() + 1, MAX_Y));
+                break;
+            case LEFT:
+                nextPrismPosition = prism.lightIn(setLoopPositionX(prism.position.getX() + 1, MAX_X), prism.position.getY());
+                break;
+            case RIGHT:
+                nextPrismPosition = prism.lightIn(setLoopPositionX(prism.position.getX() - 1, MAX_X), prism.position.getY());
+                break;
+            case BOTTOM:
+                nextPrismPosition = prism.lightIn(prism.position.getX(), setLoopPositionY(prism.position.getY() - 1, MAX_Y));
+                break;
+        }
+
+        return nextPrismPosition;
+    }
+
+    private int setLoopPositionX(int nextX, int MAX_X) {
+        if (nextX >= MAX_X - 1) {
+            return 0;
+        } else if (nextX < 0) {
+            return MAX_X;
+        } else {
+            return nextX;
+        }
+    }
+
+    private int setLoopPositionY(int nextY, int MAX_Y) {
+        if (nextY >= MAX_Y - 1) {
+            return 0;
+        } else if (nextY < 0) {
+            return MAX_Y;
+        } else {
+            return nextY;
+        }
+    }
+}
+
+enum DIRECTION {
+    TOP, LEFT, RIGHT, BOTTOM;
+}
+
+class PositionVO {
+    private int X;
+    private int Y;
+    private DIRECTION direction;
+
+    public PositionVO(int x, int y) {
+        X = x;
+        Y = y;
+    }
+
+    public int getX() {
+        return X;
+    }
+
+    public int getY() {
+        return Y;
+    }
+
+    public DIRECTION getDirection() {
+        return direction;
+    }
+
+    public void setDirection(DIRECTION direction) {
+        this.direction = direction;
+    }
+}
+
+abstract class Prism {
+    static int MAX_X;
+    static int MAX_Y;
+    PositionVO position;
+
+    PositionVO OUT_TOP;
+    PositionVO OUT_LEFT;
+    PositionVO OUT_RIGHT;
+    PositionVO OUT_BOTTOM;
+
+    abstract public PositionVO lightIn(int fromX, int fromY) throws Exception;
+    abstract public PositionVO refraction(int fromX, int fromY) throws Exception;
+    abstract public PositionVO lightOut(PositionVO nextPosition);
+    abstract public PositionVO lightOn(DIRECTION direction);
+    abstract public String toString();
+}
+
+interface Straight {
+    public PositionVO goStraight(int fromX, int fromY) throws Exception;
+}
+interface Left {
+    public PositionVO turnLeft(int fromX, int fromY) throws Exception;
+}
+interface Right {
+    public PositionVO turnRight(int fromX, int fromY) throws Exception;
+}
+
+interface Refraction {
+    public DIRECTION directing(int fromX, int fromY) throws Exception;
 }
 
 class S extends Prism implements Straight, Refraction{
-    public S(int myX, int myY) {
+    public S(int myX, int myY, int MAX_X, int MAX_Y) {
         this.position = new PositionVO(myX, myY);
+        this.MAX_X = MAX_X;
+        this.MAX_Y = MAX_Y;
     }
 
     @Override
@@ -182,24 +287,26 @@ class S extends Prism implements Straight, Refraction{
 
         switch (directing(fromX, fromY)) {
             case TOP:
-                nextDirection = new PositionVO(this.position.getX(), this.position.getY() - 1);
+                nextDirection = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() - 1));
                 nextDirection.setDirection(DIRECTION.TOP);
                 break;
             case LEFT:
-                nextDirection = new PositionVO(this.position.getX() - 1, this.position.getY());
+                nextDirection = new PositionVO(setLoopPositionX(this.position.getX() - 1), this.position.getY());
                 nextDirection.setDirection(DIRECTION.LEFT);
                 break;
             case RIGHT:
-                nextDirection = new PositionVO(this.position.getX() + 1, this.position.getY());
+                nextDirection = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
                 nextDirection.setDirection(DIRECTION.RIGHT);
                 break;
             case BOTTOM:
-                nextDirection = new PositionVO(this.position.getX(), this.position.getY() + 1);
+                nextDirection = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() + 1));
                 nextDirection.setDirection(DIRECTION.BOTTOM);
                 break;
             default:
                 throw new Exception("존재하지 않는 진행방향 입니다.");
         }
+
+        System.out.println("goStraigt() -> nextDirection.getDirection() = " + nextDirection.getDirection());
 
         return nextDirection;
     }
@@ -222,6 +329,54 @@ class S extends Prism implements Straight, Refraction{
         }
     }
 
+    private int setLoopPositionX(int nextX) {
+        if (nextX >= this.MAX_X) {
+            return 0;
+        } else if (nextX < 0) {
+            return this.MAX_X - 1;
+        } else {
+            return nextX;
+        }
+    }
+
+    private int setLoopPositionY(int nextY) {
+        if (nextY >= this.MAX_Y) {
+            return 0;
+        } else if (nextY < 0) {
+            return this.MAX_Y - 1;
+        } else {
+            return nextY;
+        }
+    }
+
+    public PositionVO lightOn(DIRECTION direction) {
+        PositionVO nextPosition = null;
+
+        switch (direction) {
+            case TOP:
+                nextPosition = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() - 1));
+                nextPosition.setDirection(DIRECTION.TOP);
+                break;
+            case LEFT:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() - 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.LEFT);
+                break;
+            case RIGHT:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.RIGHT);
+                break;
+            case BOTTOM:
+                nextPosition = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() + 1));
+                nextPosition.setDirection(DIRECTION.BOTTOM);
+                break;
+            default:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.RIGHT);
+        }
+
+        return lightOut(nextPosition);
+    }
+
     @Override
     public String toString() {
         return "Class = S, x = " + this.position.getX() + ", y = " + this.position.getY();
@@ -229,8 +384,10 @@ class S extends Prism implements Straight, Refraction{
 }
 
 class L extends Prism implements Left, Refraction{
-    public L(int myX, int myY) {
+    public L(int myX, int myY, int MAX_X, int MAX_Y) {
         this.position = new PositionVO(myX, myY);
+        this.MAX_X = MAX_X;
+        this.MAX_Y = MAX_Y;
     }
 
     @Override
@@ -276,6 +433,7 @@ class L extends Prism implements Left, Refraction{
                 this.OUT_BOTTOM = nextPosition;
                 break;
         }
+
         return nextPosition;
     }
 
@@ -284,24 +442,26 @@ class L extends Prism implements Left, Refraction{
 
         switch (directing(fromX, fromY)) {
             case TOP:
-                nextDirection = new PositionVO(this.position.getX() + 1, this.position.getY());
+                nextDirection = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
                 nextDirection.setDirection(DIRECTION.RIGHT);
                 break;
             case LEFT:
-                nextDirection = new PositionVO(this.position.getX(), this.position.getY() - 1);
-                nextDirection.setDirection(DIRECTION.TOP);
-                break;
-            case RIGHT:
-                nextDirection = new PositionVO(this.position.getX(), this.position.getY() + 1);
+                nextDirection = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() + 1));
                 nextDirection.setDirection(DIRECTION.BOTTOM);
                 break;
+            case RIGHT:
+                nextDirection = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() - 1));
+                nextDirection.setDirection(DIRECTION.TOP);
+                break;
             case BOTTOM:
-                nextDirection = new PositionVO(this.position.getX() - 1, this.position.getY());
+                nextDirection = new PositionVO(setLoopPositionX(this.position.getX() - 1), this.position.getY());
                 nextDirection.setDirection(DIRECTION.LEFT);
                 break;
             default:
                 throw new Exception("존재하지 않는 진행방향 입니다.");
         }
+
+        System.out.println("turnLeft() -> nextDirection.getDirection() = " + nextDirection.getDirection());
 
         return nextDirection;
     }
@@ -324,6 +484,54 @@ class L extends Prism implements Left, Refraction{
         }
     }
 
+    private int setLoopPositionX(int nextX) {
+        if (nextX >= this.MAX_X) {
+            return 0;
+        } else if (nextX < 0) {
+            return this.MAX_X - 1;
+        } else {
+            return nextX;
+        }
+    }
+
+    private int setLoopPositionY(int nextY) {
+        if (nextY >= this.MAX_Y) {
+            return 0;
+        } else if (nextY < 0) {
+            return this.MAX_Y - 1;
+        } else {
+            return nextY;
+        }
+    }
+
+    public PositionVO lightOn(DIRECTION direction) {
+        PositionVO nextPosition = null;
+
+        switch (direction) {
+            case TOP:
+                nextPosition = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() - 1));
+                nextPosition.setDirection(DIRECTION.TOP);
+                break;
+            case LEFT:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() - 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.LEFT);
+                break;
+            case RIGHT:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.RIGHT);
+                break;
+            case BOTTOM:
+                nextPosition = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() + 1));
+                nextPosition.setDirection(DIRECTION.BOTTOM);
+                break;
+            default:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.RIGHT);
+        }
+
+        return lightOut(nextPosition);
+    }
+
     @Override
     public String toString() {
         return "Class = L, x = " + this.position.getX() + ", y = " + this.position.getY();
@@ -331,8 +539,10 @@ class L extends Prism implements Left, Refraction{
 }
 
 class R extends Prism implements Right, Refraction{
-    public R(int myX, int myY) {
+    public R(int myX, int myY, int MAX_X, int MAX_Y) {
         this.position = new PositionVO(myX, myY);
+        this.MAX_X = MAX_X;
+        this.MAX_Y = MAX_Y;
     }
 
     @Override
@@ -386,24 +596,26 @@ class R extends Prism implements Right, Refraction{
 
         switch (directing(fromX, fromY)) {
             case TOP:
-                nextDirection = new PositionVO(this.position.getX() - 1, this.position.getY());
+                nextDirection = new PositionVO(setLoopPositionX(this.position.getX() - 1), this.position.getY());
                 nextDirection.setDirection(DIRECTION.LEFT);
                 break;
             case LEFT:
-                nextDirection = new PositionVO(this.position.getX(), this.position.getY() + 1);
+                nextDirection = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() + 1));
                 nextDirection.setDirection(DIRECTION.BOTTOM);
                 break;
             case RIGHT:
-                nextDirection = new PositionVO(this.position.getX(), this.position.getY() - 1);
+                nextDirection = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() - 1));
                 nextDirection.setDirection(DIRECTION.TOP);
                 break;
             case BOTTOM:
-                nextDirection = new PositionVO(this.position.getX() + 1, this.position.getY());
+                nextDirection = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
                 nextDirection.setDirection(DIRECTION.RIGHT);
                 break;
             default:
                 throw new Exception("존재하지 않는 진행방향 입니다.");
         }
+
+        System.out.println("turnRight() -> nextDirection.getDirection() = " + nextDirection.getDirection());
 
         return nextDirection;
     }
@@ -426,73 +638,60 @@ class R extends Prism implements Right, Refraction{
         }
     }
 
+    private int setLoopPositionX(int nextX) {
+        if (nextX >= this.MAX_X) {
+            return 0;
+        } else if (nextX < 0) {
+            return this.MAX_X - 1;
+        } else {
+            return nextX;
+        }
+    }
+
+    private int setLoopPositionY(int nextY) {
+        if (nextY >= this.MAX_Y) {
+            return 0;
+        } else if (nextY < 0) {
+            return this.MAX_Y - 1;
+        } else {
+            return nextY;
+        }
+    }
+
+    public PositionVO lightOn(DIRECTION direction) {
+        PositionVO nextPosition = null;
+
+        switch (direction) {
+            case TOP:
+                nextPosition = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() - 1));
+                nextPosition.setDirection(DIRECTION.TOP);
+                break;
+            case LEFT:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() - 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.LEFT);
+                break;
+            case RIGHT:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.RIGHT);
+                break;
+            case BOTTOM:
+                nextPosition = new PositionVO(this.position.getX(), setLoopPositionY(this.position.getY() + 1));
+                nextPosition.setDirection(DIRECTION.BOTTOM);
+                break;
+            default:
+                nextPosition = new PositionVO(setLoopPositionX(this.position.getX() + 1), this.position.getY());
+                nextPosition.setDirection(DIRECTION.RIGHT);
+        }
+
+        return lightOut(nextPosition);
+    }
+
     @Override
     public String toString() {
         return "Class = R, x = " + this.position.getX() + ", y = " + this.position.getY();
     }
 }
 
-enum DIRECTION {
-    TOP, LEFT, RIGHT, BOTTOM;
-}
-
-class PositionVO {
-    private int X;
-    private int Y;
-    private DIRECTION direction;
-
-    public PositionVO(int x, int y) {
-        X = x;
-        Y = y;
-    }
-
-    public int getX() {
-        return X;
-    }
-
-    public int getY() {
-        return Y;
-    }
-
-    public DIRECTION getDirection() {
-        return direction;
-    }
-
-    public void setDirection(DIRECTION direction) {
-        this.direction = direction;
-    }
-}
-
-abstract class Prism {
-    final static int MAX_X = 10;
-    final static int MAX_Y = 10;
-
-    PositionVO position;
-
-    PositionVO OUT_TOP;
-    PositionVO OUT_LEFT;
-    PositionVO OUT_RIGHT;
-    PositionVO OUT_BOTTOM;
-
-    abstract public PositionVO lightIn(int fromX, int fromY) throws Exception;
-    abstract public PositionVO refraction(int fromX, int fromY) throws Exception;
-    abstract public PositionVO lightOut(PositionVO nextPosition);
-    abstract public String toString();
-}
-
-interface Straight {
-    public PositionVO goStraight(int fromX, int fromY) throws Exception;
-}
-interface Left {
-    public PositionVO turnLeft(int fromX, int fromY) throws Exception;
-}
-interface Right {
-    public PositionVO turnRight(int fromX, int fromY) throws Exception;
-}
-
-interface Refraction {
-    public DIRECTION directing(int fromX, int fromY) throws Exception;
-}
 class LightBlockingException extends RuntimeException {
     LightBlockingException(String message) {
         super(message);
