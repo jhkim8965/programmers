@@ -44,13 +44,15 @@ class CodingTestLv2ControllerTest {
     @DisplayName("빛의 경로 사이클")
     void lesson_86052(){
         // given
-        String[] grid = {"SL", "LR"};
+//        String[] grid = {"SL", "LR"};
+        String[] grid = {"S"};
 
         // when
         int[] answer = codingTestLv2Service.lesson_86052(grid);
-//        for (int aswr : answer) System.out.println("aswr = " + aswr);
+        for (int aswr : answer) System.out.println("aswr = " + aswr);
 
         // then
-//        assertThat(answer).isEqualTo(110);
+//        assertThat(answer).isEqualTo(new int[]{16});
+        assertThat(answer).isEqualTo(new int[]{1, 1, 1, 1});
     }
 }

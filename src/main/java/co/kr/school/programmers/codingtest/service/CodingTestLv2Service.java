@@ -14,5 +14,5 @@ public class CodingTestLv2Service {
     /**
      * 코딩테스트 Lv2: 빛의 경로 사이클
      */
-    public int[] lesson_86052(String[] grid) { return new Lesson_86052(grid).getAnswer(); }
+    public int[] lesson_86052(String[] grid) { return new Lesson_86052_new(grid).getAnswer(); }
 }
