@@ -74,12 +74,14 @@ public class Lesson_86052_new {
 
             int lengthOfCycle = 0;
             while (nextPrismPosition != null) {
-                System.out.println("prisms[][] = " + prisms[nextPrismPosition.getY()][nextPrismPosition.getX()]);
-                nextPrismPosition = prisms[nextPrismPosition.getY()][nextPrismPosition.getX()].lightIn(nextPrismPosition.getDirection());
+                try {
+                    nextPrismPosition = prisms[nextPrismPosition.getY()][nextPrismPosition.getX()].lightIn(nextPrismPosition.getDirection());
+                } catch (LightBlockingException_new ex) {
+                    break;
+                }
                 lengthOfCycle++;
             }
 
-            System.out.println("cycleCnt = " + lengthOfCycle);
             cycleList.add(lengthOfCycle);
             nextPrismPosition = getNextPrismPosition(MAX_X, MAX_Y, prisms);
         }
@@ -97,13 +99,13 @@ public class Lesson_86052_new {
             for (String prism : prismList) {
                 switch (prism) {
                     case "S":
-                        prisms[y][x] = new S_new(x, y, MAX_Y, MAX_Y);
+                        prisms[y][x] = new S_new(x, y, MAX_X, MAX_Y);
                         break;
                     case "L":
-                        prisms[y][x] = new L_new(x, y, MAX_Y, MAX_Y);
+                        prisms[y][x] = new L_new(x, y, MAX_X, MAX_Y);
                         break;
                     case "R":
-                        prisms[y][x] = new R_new(x, y, MAX_Y, MAX_Y);
+                        prisms[y][x] = new R_new(x, y, MAX_X, MAX_Y);
                         break;
                 }
                 x++;
@@ -119,13 +121,13 @@ public class Lesson_86052_new {
             for (int x = 0; x < MAX_X; ++x) {
                 Prism_new prism = prisms[y][x];
                 if (prism.OUT_TOP == null) {
-                    return prism.lightIn(prism.findFromDirection(DIRECTION_new.TOP));
+                    return prism.refraction(prism.findFromDirection(DIRECTION_new.TOP));
                 } else if (prism.OUT_LEFT == null) {
-                    return prism.lightIn(prism.findFromDirection(DIRECTION_new.LEFT));
+                    return prism.refraction(prism.findFromDirection(DIRECTION_new.LEFT));
                 } else if (prism.OUT_RIGHT == null) {
-                    return prism.lightIn(prism.findFromDirection(DIRECTION_new.RIGHT));
+                    return prism.refraction(prism.findFromDirection(DIRECTION_new.RIGHT));
                 } else if (prism.OUT_BOTTOM == null) {
-                    return prism.lightIn(prism.findFromDirection(DIRECTION_new.BOTTOM));
+                    return prism.refraction(prism.findFromDirection(DIRECTION_new.BOTTOM));
                 } else {
                     return null;
                 }
@@ -133,6 +135,12 @@ public class Lesson_86052_new {
         }
 
         return null;
+    }
+}
+
+class LightBlockingException_new extends RuntimeException {
+    LightBlockingException_new(String message) {
+        super(message);
     }
 }
 
@@ -222,8 +230,8 @@ class S_new extends Prism_new implements Straight_new{
     }
 
     @Override
-    public Position_new lightIn(DIRECTION_new fromDirection) {
-        Position_new nextPrismPosition = refraction(fromDirection);
+    public Position_new lightIn(DIRECTION_new toDirection) throws LightBlockingException_new {
+        Position_new nextPrismPosition = refraction(findFromDirection(toDirection));
         return lightOut(nextPrismPosition);
     }
 
@@ -233,23 +241,35 @@ class S_new extends Prism_new implements Straight_new{
     }
 
     @Override
-    public Position_new lightOut(Position_new nextPrismPosition) {
+    public Position_new lightOut(Position_new nextPrismPosition) throws LightBlockingException_new {
         switch (nextPrismPosition.getDirection()) {
             case TOP:
-                if(OUT_TOP != null) return null;
-                OUT_TOP = nextPrismPosition;
+                if (OUT_TOP == null) {
+                    OUT_TOP = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case LEFT:
-                if(OUT_LEFT != null) return null;
-                OUT_LEFT = nextPrismPosition;
+                if (OUT_LEFT == null) {
+                    OUT_LEFT = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case RIGHT:
-                if(OUT_RIGHT != null) return null;
-                OUT_RIGHT = nextPrismPosition;
+                if (OUT_RIGHT == null) {
+                    OUT_RIGHT = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case BOTTOM:
-                if(OUT_BOTTOM != null) return null;
-                OUT_BOTTOM = nextPrismPosition;
+                if (OUT_BOTTOM == null) {
+                    OUT_BOTTOM = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
         }
 
@@ -318,7 +338,7 @@ class L_new extends Prism_new implements Left_new{
     }
 
     @Override
-    public Position_new lightIn(DIRECTION_new fromDirection) {
+    public Position_new lightIn(DIRECTION_new fromDirection) throws LightBlockingException_new {
         Position_new nextPrismPosition = refraction(fromDirection);
         return lightOut(nextPrismPosition);
     }
@@ -329,23 +349,35 @@ class L_new extends Prism_new implements Left_new{
     }
 
     @Override
-    public Position_new lightOut(Position_new nextPrismPosition) {
+    public Position_new lightOut(Position_new nextPrismPosition) throws LightBlockingException_new {
         switch (nextPrismPosition.getDirection()) {
             case TOP:
-                if(OUT_TOP != null) return null;
-                OUT_TOP = nextPrismPosition;
+                if (OUT_TOP == null) {
+                    OUT_TOP = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case LEFT:
-                if(OUT_LEFT != null) return null;
-                OUT_LEFT = nextPrismPosition;
+                if (OUT_LEFT == null) {
+                    OUT_LEFT = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case RIGHT:
-                if(OUT_RIGHT != null) return null;
-                OUT_RIGHT = nextPrismPosition;
+                if (OUT_RIGHT == null) {
+                    OUT_RIGHT = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case BOTTOM:
-                if(OUT_BOTTOM != null) return null;
-                OUT_BOTTOM = nextPrismPosition;
+                if (OUT_BOTTOM == null) {
+                    OUT_BOTTOM = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
         }
 
@@ -414,7 +446,7 @@ class R_new extends Prism_new implements Right_new{
     }
 
     @Override
-    public Position_new lightIn(DIRECTION_new fromDirection) {
+    public Position_new lightIn(DIRECTION_new fromDirection) throws LightBlockingException_new {
         Position_new nextPrismPosition = refraction(fromDirection);
         return lightOut(nextPrismPosition);
     }
@@ -425,23 +457,35 @@ class R_new extends Prism_new implements Right_new{
     }
 
     @Override
-    public Position_new lightOut(Position_new nextPrismPosition) {
+    public Position_new lightOut(Position_new nextPrismPosition) throws LightBlockingException_new {
         switch (nextPrismPosition.getDirection()) {
             case TOP:
-                if(OUT_TOP != null) return null;
-                OUT_TOP = nextPrismPosition;
+                if (OUT_TOP == null) {
+                    OUT_TOP = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case LEFT:
-                if(OUT_LEFT != null) return null;
-                OUT_LEFT = nextPrismPosition;
+                if (OUT_LEFT == null) {
+                    OUT_LEFT = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case RIGHT:
-                if(OUT_RIGHT != null) return null;
-                OUT_RIGHT = nextPrismPosition;
+                if (OUT_RIGHT == null) {
+                    OUT_RIGHT = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
             case BOTTOM:
-                if(OUT_BOTTOM != null) return null;
-                OUT_BOTTOM = nextPrismPosition;
+                if (OUT_BOTTOM == null) {
+                    OUT_BOTTOM = nextPrismPosition;
+                } else {
+                    throw new LightBlockingException_new("이미 빛이 지나간 경로 입니다.");
+                }
                 break;
         }
 

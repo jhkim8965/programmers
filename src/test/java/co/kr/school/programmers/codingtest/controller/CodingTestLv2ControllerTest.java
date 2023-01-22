@@ -45,7 +45,9 @@ class CodingTestLv2ControllerTest {
     void lesson_86052(){
         // given
 //        String[] grid = {"SL", "LR"};
-        String[] grid = {"S"};
+//        String[] grid = {"S"};
+//        String[] grid = {"R", "R"};
+        String[] grid = {"S", "S"};
 
         // when
         int[] answer = codingTestLv2Service.lesson_86052(grid);
@@ -53,6 +55,8 @@ class CodingTestLv2ControllerTest {
 
         // then
 //        assertThat(answer).isEqualTo(new int[]{16});
-        assertThat(answer).isEqualTo(new int[]{1, 1, 1, 1});
+//        assertThat(answer).isEqualTo(new int[]{1, 1, 1, 1});
+//        assertThat(answer).isEqualTo(new int[]{4, 4});
+        assertThat(answer).isEqualTo(new int[]{1,1,1,1,2,2});
     }
 }
