@@ -63,12 +63,13 @@ public class Lesson_86052_new {
 
     private int[] solution(String[] grid) {
         List<Integer> cycleList = new ArrayList<>();
+        List<Prism_new> prismList = new ArrayList<>();
 
         final int MAX_X = grid[0].split("").length;
         final int MAX_Y = grid.length;
-        Prism_new[][] prisms = setPrisms(grid, MAX_X, MAX_Y);
+        Prism_new[][] prisms = setPrisms(grid, MAX_X, MAX_Y, prismList);
 
-        Position_new nextPrismPosition = getNextPrismPosition(MAX_X, MAX_Y, prisms);
+        Position_new nextPrismPosition = getNextPrismPosition(prismList);
         while (nextPrismPosition != null) {
 
             int lengthOfCycle = 0;
@@ -82,21 +83,21 @@ public class Lesson_86052_new {
             }
 
             cycleList.add(lengthOfCycle);
-            nextPrismPosition = getNextPrismPosition(MAX_X, MAX_Y, prisms);
+            nextPrismPosition = getNextPrismPosition(prismList);
         }
 
         Collections.sort(cycleList);
         return cycleList.stream().mapToInt(i -> i).toArray();
     }
 
-    private Prism_new[][] setPrisms(String[] grid, final int MAX_X, final int MAX_Y) {
+    private Prism_new[][] setPrisms(String[] grid, final int MAX_X, final int MAX_Y, List<Prism_new> prismList) {
         Prism_new[][] prisms = new Prism_new[MAX_Y][MAX_X];
 
         int y = 0;
-        for (String xList : grid) {
+        for (String yList : grid) {
             int x = 0;
-            String[] prismList = xList.split("");
-            for (String prism : prismList) {
+            String[] xList = yList.split("");
+            for (String prism : xList) {
                 switch (prism) {
                     case "S":
                         prisms[y][x] = new S_new(x, y, MAX_X, MAX_Y);
@@ -108,6 +109,7 @@ public class Lesson_86052_new {
                         prisms[y][x] = new R_new(x, y, MAX_X, MAX_Y);
                         break;
                 }
+                prismList.add(prisms[y][x]);
                 x++;
             }
             y++;
@@ -116,20 +118,23 @@ public class Lesson_86052_new {
         return prisms;
     }
 
-    private Position_new getNextPrismPosition(int MAX_X, int MAX_Y, Prism_new[][] prisms) {
-        for (int y = 0; y < MAX_Y; ++y) {
-            for (int x = 0; x < MAX_X; ++x) {
-                Prism_new prism = prisms[y][x];
-                if (prism.OUT_TOP == null) {
-                    return prism.refraction(prism.findFromDirection(DIRECTION_new.TOP));
-                } else if (prism.OUT_LEFT == null) {
-                    return prism.refraction(prism.findFromDirection(DIRECTION_new.LEFT));
-                } else if (prism.OUT_RIGHT == null) {
-                    return prism.refraction(prism.findFromDirection(DIRECTION_new.RIGHT));
-                } else if (prism.OUT_BOTTOM == null) {
-                    return prism.refraction(prism.findFromDirection(DIRECTION_new.BOTTOM));
-                }
+    private Position_new getNextPrismPosition(List<Prism_new> prismList) {
+        Iterator<Prism_new> prisms = prismList.iterator();
+
+        while (prisms.hasNext()) {
+            Prism_new prism = prisms.next();
+
+            if (prism.OUT_TOP == null) {
+                return prism.refraction(prism.findFromDirection(DIRECTION_new.TOP));
+            } else if (prism.OUT_LEFT == null) {
+                return prism.refraction(prism.findFromDirection(DIRECTION_new.LEFT));
+            } else if (prism.OUT_RIGHT == null) {
+                return prism.refraction(prism.findFromDirection(DIRECTION_new.RIGHT));
+            } else if (prism.OUT_BOTTOM == null) {
+                return prism.refraction(prism.findFromDirection(DIRECTION_new.BOTTOM));
             }
+
+            prisms.remove();
         }
 
         return null;
