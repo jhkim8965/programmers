@@ -59,4 +59,21 @@ class CodingTestLv2ControllerTest {
 //        assertThat(answer).isEqualTo(new int[]{4, 4});
         assertThat(answer).isEqualTo(new int[]{1,1,1,1,2,2});
     }
+
+    @Test
+    @DisplayName("택배 배달과 수거하기")
+    void lesson_150369() {
+        // given
+        int cap = 4;
+        int n = 5;
+        int[] deliveries = {1, 0, 3, 1, 2};
+        int[] pickups = {0, 3, 0, 4, 0};
+
+        // when
+        long answer = codingTestLv2Service.lesson_150369(cap, n, deliveries, pickups);
+        System.out.println("answer = " + answer);
+
+        // then
+        assertThat(answer).isEqualTo(16);
+    }
 }
