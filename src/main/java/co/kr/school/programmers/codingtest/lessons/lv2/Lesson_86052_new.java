@@ -1,7 +1,6 @@
 package co.kr.school.programmers.codingtest.lessons.lv2;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 /**
  * 빛의 경로 사이클
@@ -86,6 +85,7 @@ public class Lesson_86052_new {
             nextPrismPosition = getNextPrismPosition(MAX_X, MAX_Y, prisms);
         }
 
+        Collections.sort(cycleList);
         return cycleList.stream().mapToInt(i -> i).toArray();
     }
 
@@ -128,8 +128,6 @@ public class Lesson_86052_new {
                     return prism.refraction(prism.findFromDirection(DIRECTION_new.RIGHT));
                 } else if (prism.OUT_BOTTOM == null) {
                     return prism.refraction(prism.findFromDirection(DIRECTION_new.BOTTOM));
-                } else {
-                    return null;
                 }
             }
         }
