@@ -83,7 +83,7 @@ public class Lesson_150369 {
     private long solution(int cap, int n, int[] deliveries, int[] pickups) {
         long answer = -1;
         Truck truck = new Truck(cap);
-        Queue<Order> orders = makeOrders(n, deliveries, pickups);
+        Queue<Order> orders = makeOrders(cap, n, deliveries, pickups);
 
         for (Order order : orders) {
             answer = truck.moveTo(order.destination);
@@ -100,10 +100,32 @@ public class Lesson_150369 {
         return answer;
     }
 
-    private Queue<Order> makeOrders(int n, int[] deliveries, int[] pickups) {
+    private Queue<Order> makeOrders(int cap, int n, int[] deliveries, int[] pickups) {
         Queue<Order> orders = new LinkedList<Order>();
 
+        int delivery = 0;
+        int pickup = 0;
+        int lastDestination = n;
+        while (lastDestination >= 0) {
+            if (delivery + deliveries[lastDestination] <= cap) {
+                delivery += deliveries[lastDestination];
+                deliveries[lastDestination] = 0;
+            } else {
+                if (delivery < cap) {
+                    int freeSpace = cap - delivery;
+                    deliveries[lastDestination] -= freeSpace;
+                    delivery += freeSpace;
+                }
+            }
 
+            if (pickup + pickups[lastDestination] <= cap) {
+                pickup += pickups[lastDestination];
+            } else {
+
+            }
+
+
+        }
 
         return orders;
     }
