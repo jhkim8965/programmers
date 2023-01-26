@@ -89,17 +89,11 @@ public class Lesson_150369 {
             answer = truck.moveTo(order.destination);
 
             if (order.getDestination() == 0) {
-                if (order.getDeliveryBoxCnt() > 0) {
-                    truck.loading(BOX_TYPE.DELIVERY, order.getPickUpBoxCnt());
-                } else if (order.getPickUpBoxCnt() > 0) {
-                    truck.unloading(BOX_TYPE.PICKUP, order.getDeliveryBoxCnt());
-                }
+                truck.loading(BOX_TYPE.DELIVERY, order.getPickUpBoxCnt());
+                truck.unloading(BOX_TYPE.PICKUP, order.getDeliveryBoxCnt());
             } else {
-                if (order.getDeliveryBoxCnt() > 0) {
-                    truck.unloading(BOX_TYPE.DELIVERY, order.getDeliveryBoxCnt());
-                } else if (order.getPickUpBoxCnt() > 0) {
-                    truck.loading(BOX_TYPE.PICKUP, order.getPickUpBoxCnt());
-                }
+                truck.unloading(BOX_TYPE.DELIVERY, order.getDeliveryBoxCnt());
+                truck.loading(BOX_TYPE.PICKUP, order.getPickUpBoxCnt());
             }
         }
 
