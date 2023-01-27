@@ -2,6 +2,7 @@ package co.kr.school.programmers.codingtest.lessons.lv2;
 
 import java.util.LinkedList;
 import java.util.Queue;
+import java.util.Stack;
 
 /**
  * 택배 배달과 수거하기
@@ -101,7 +102,10 @@ public class Lesson_150369 {
     }
 
     private Queue<Order> makeOrders(int cap, int n, int[] deliveries, int[] pickups) {
-        Queue<Order> orders = new LinkedList<Order>();
+        Queue<Order> orders = new LinkedList<>();
+
+        Stack<Order> deliveryOrders = new Stack<>();
+        Queue<Order> pickUpOrders = new LinkedList<>();
 
         int delivery = 0;
         int pickup = 0;
