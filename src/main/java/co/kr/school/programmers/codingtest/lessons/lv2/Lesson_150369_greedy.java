@@ -104,7 +104,7 @@ public class Lesson_150369_greedy {
                 delivery -= deliveries[index];
                 pickUp -=  pickups[index];
 
-                answer = answer + ((index + 1) * cnt * 2);
+                answer += (index + 1) * cnt * 2;
                 System.out.println("distance = " + ((index+1)*cnt*2) + ", index = " + index + ", cnt = " + cnt);
             }
         }
