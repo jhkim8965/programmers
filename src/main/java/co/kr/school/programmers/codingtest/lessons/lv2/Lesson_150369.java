@@ -1,5 +1,6 @@
 package co.kr.school.programmers.codingtest.lessons.lv2;
 
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
@@ -86,12 +87,13 @@ public class Lesson_150369 {
         Truck truck = new Truck(cap);
         Queue<Order> orders = makeOrders(cap, n, deliveries, pickups);
 
-        for (Order order : orders) {
+        while (!orders.isEmpty()) {
+            Order order = orders.poll();
             answer = truck.moveTo(order.destination);
 
             if (order.getDestination() == 0) {
-                truck.loading(BOX_TYPE.DELIVERY, order.getPickUpBoxCnt());
-                truck.unloading(BOX_TYPE.PICKUP, order.getDeliveryBoxCnt());
+                truck.loading(BOX_TYPE.DELIVERY, order.getDeliveryBoxCnt());
+                truck.unloading(BOX_TYPE.PICKUP, order.getPickUpBoxCnt());
             } else {
                 truck.unloading(BOX_TYPE.DELIVERY, order.getDeliveryBoxCnt());
                 truck.loading(BOX_TYPE.PICKUP, order.getPickUpBoxCnt());
@@ -104,34 +106,91 @@ public class Lesson_150369 {
     private Queue<Order> makeOrders(int cap, int n, int[] deliveries, int[] pickups) {
         Queue<Order> orders = new LinkedList<>();
 
-        Stack<Order> deliveryOrders = new Stack<>();
-        Queue<Order> pickUpOrders = new LinkedList<>();
-
-        int delivery = 0;
-        int pickup = 0;
         int lastDestination = n;
-        while (lastDestination >= 0) {
-            if (delivery + deliveries[lastDestination] <= cap) {
-                delivery += deliveries[lastDestination];
-                deliveries[lastDestination] = 0;
-            } else {
-                if (delivery < cap) {
-                    int freeSpace = cap - delivery;
-                    deliveries[lastDestination] -= freeSpace;
-                    delivery += freeSpace;
-                }
-            }
+        while (lastDestination > 0) {
+            Stack<Order> deliveryOrders = new Stack<>();
+            Queue<Order> pickUpOrders = new LinkedList<>();
+            lastDestination = analyzeDeliveryProcess(cap, lastDestination, deliveries, pickups, deliveryOrders, pickUpOrders);
 
-            if (pickup + pickups[lastDestination] <= cap) {
-                pickup += pickups[lastDestination];
-            } else {
+            Deque<Order> deliveryProcess = new LinkedList<>();
+            makeDeliveryProcess(deliveryProcess, deliveryOrders, pickUpOrders);
 
-            }
-
-
+            setOrders(orders, deliveryProcess);
         }
 
         return orders;
+    }
+
+    private int analyzeDeliveryProcess(int cap, int lastDestination, int[] deliveries, int[] pickups, Stack<Order> deliveryOrders, Queue<Order> pickUpOrders) {
+        int deliveryBoxCnt = 0;
+        int pickUpBoxCnt = 0;
+        int deliveryLastDestination = -1;
+        int pickUpLastDestination = -1;
+
+        while (deliveryBoxCnt < cap || pickUpBoxCnt < cap) {
+            if (deliveryBoxCnt + deliveries[lastDestination - 1] <= cap) {
+                deliveryOrders.add(new Order(lastDestination, deliveries[lastDestination - 1], 0));
+                deliveryBoxCnt += deliveries[lastDestination - 1];
+                deliveries[lastDestination - 1] = 0;
+                deliveryLastDestination = lastDestination;
+            } else {
+                if (deliveryBoxCnt < cap) {
+                    int freeSpace = cap - deliveryBoxCnt;
+                    deliveryOrders.add(new Order(lastDestination, freeSpace, 0));
+                    deliveryBoxCnt += freeSpace;
+                    deliveries[lastDestination - 1] -= freeSpace;
+                    deliveryLastDestination = lastDestination;
+                }
+            }
+
+            if (pickUpBoxCnt + pickups[lastDestination - 1] <= cap) {
+                pickUpOrders.add(new Order(lastDestination, 0, pickups[lastDestination - 1]));
+                pickUpBoxCnt += pickups[lastDestination - 1];
+                pickups[lastDestination - 1] = 0;
+                pickUpLastDestination = lastDestination;
+            } else {
+                if (pickUpBoxCnt < cap) {
+                    int freeSpace = cap - pickUpBoxCnt;
+                    pickUpOrders.add(new Order(lastDestination, 0, freeSpace));
+                    pickUpBoxCnt += freeSpace;
+                    pickups[lastDestination - 1] -= freeSpace;
+                    pickUpLastDestination = lastDestination;
+                }
+            }
+
+            if (--lastDestination == 0) {
+                deliveryLastDestination = 0;
+                pickUpLastDestination = 0;
+                break;
+            }
+        }
+
+        return deliveryLastDestination > pickUpLastDestination ? deliveryLastDestination : pickUpLastDestination;
+    }
+
+    private void makeDeliveryProcess(Deque<Order> deliveryProcess, Stack<Order> deliveryOrders, Queue<Order> pickUpOrders) {
+
+        int deliveryBoxCnt = 0;
+        while (!deliveryOrders.isEmpty()) {
+            Order deliveryOrder = deliveryOrders.pop();
+            deliveryBoxCnt += deliveryOrder.getDeliveryBoxCnt();
+            deliveryProcess.addLast(deliveryOrder);
+        }
+        deliveryProcess.addFirst(new Order(0, deliveryBoxCnt, 0));
+
+        int pickUpBoxCnt = 0;
+        while (!pickUpOrders.isEmpty()) {
+            Order pickUpOrder = pickUpOrders.poll();
+            pickUpBoxCnt += pickUpOrder.getDeliveryBoxCnt();
+            deliveryProcess.addLast(pickUpOrder);
+        }
+        deliveryProcess.addLast(new Order(0, 0, pickUpBoxCnt));
+    }
+
+    private void setOrders(Queue<Order> orders, Deque<Order> deliveryProcess) {
+        while (!deliveryProcess.isEmpty()) {
+            orders.add(deliveryProcess.poll());
+        }
     }
 
     static class Order {
