@@ -81,4 +81,26 @@ class CodingTestLv2ControllerTest {
 //        assertThat(answer).isEqualTo(16);
         assertThat(answer).isEqualTo(30);
     }
+
+    @Test
+    @DisplayName("택배 배달과 수거하기")
+    void lesson_150369_greedy() {
+        // given
+        int cap = 4;
+        int n = 5;
+        int[] deliveries = {1, 0, 3, 1, 2};
+        int[] pickups = {0, 3, 0, 4, 0};
+//        int cap = 2;
+//        int n = 7;
+//        int[] deliveries = {1, 0, 2, 0, 1, 0, 2};
+//        int[] pickups = {0, 2, 0, 1, 0, 2, 0};
+
+        // when
+        long answer = codingTestLv2Service.lesson_150369_greedy(cap, n, deliveries, pickups);
+        System.out.println("answer = " + answer);
+
+        // then
+        assertThat(answer).isEqualTo(16);
+//        assertThat(answer).isEqualTo(30);
+    }
 }

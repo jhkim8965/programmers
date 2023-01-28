@@ -20,4 +20,9 @@ public class CodingTestLv2Service {
      * 코딩테스트 Lv2: 택배 배달과 수거하기
      */
     public long lesson_150369(int cap, int n, int[] deliveries, int[] pickups) { return new Lesson_150369(cap, n, deliveries, pickups).getAnswer(); }
+
+    /**
+     * 코딩테스트 Lv2: 택배 배달과 수거하기
+     */
+    public long lesson_150369_greedy(int cap, int n, int[] deliveries, int[] pickups) { return new Lesson_150369_greedy(cap, n, deliveries, pickups).getAnswer(); }
 }
